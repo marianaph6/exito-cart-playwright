@@ -12,7 +12,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\playwright.config.ts",
+            "program": "${file}",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

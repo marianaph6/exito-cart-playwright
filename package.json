@@ -4,13 +4,19 @@
   "description": "E2E suite – Maestría Mejora de Procesos de Calidad de Software",
   "author": "Mariana Palacios",
   "main": "index.js",
-  "scripts": {
-    "test": "playwright test",
-    "test:headed": "HEADLESS=false playwright test",
-    "test:ci": "CI=true playwright test --reporter=dot",
-    "lint": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "pw:init": "npx playwright install"
-  },
+"scripts": {
+  "test":           "playwright test",     
+  "test:headed":    "playwright test --headed",
+  "test:chromium":  "playwright test --headed --project=chromium",
+  "test:firefox":   "playwright test --headed --project=firefox",
+  "test:webkit":    "playwright test --headed --project=webkit",
+  "test:ui":        "playwright test --ui",
+  "test:ci":        "CI=true playwright test --reporter=dot",
+  "report":         "npx playwright show-report reports/html",
+  "lint":           "eslint \"src/**/*.{ts,tsx}\" --fix",
+  "pw:init":        "npx playwright install"
+}
+,
   "keywords": [],
   "type": "commonjs",
   "devDependencies": {
