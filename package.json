@@ -1,18 +1,26 @@
 {
   "name": "exito-cart-playwright",
   "version": "1.0.0",
-  "description": "",
+  "description": "E2E suite – Maestría Mejora de Procesos de Calidad de Software",
+  "author": "Mariana Palacios",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "HEADLESS=false playwright test",
+    "test:ci": "CI=true playwright test --reporter=dot",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "pw:init": "npx playwright install"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.17"
   },
   "dependencies": {
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "dotenv-expand": "^12.0.2",
+    "eslint": "^9.26.0",
+    "typescript": "^5.8.3"
   }
 }
