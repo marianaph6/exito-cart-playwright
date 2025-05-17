@@ -23,6 +23,10 @@ export class ValidateCart implements Task {
     return new ValidateCart();
   }
 
+  static hasItems(expectedCount: number): ValidateCart {
+    return new ValidateCart(undefined, expectedCount);
+  }
+
   async performAs(actor: Actor): Promise<void> {
     const browseTheWeb = actor.abilityTo(BrowseTheWeb);
     const page = browseTheWeb.getPage();
@@ -46,6 +50,8 @@ export class ValidateCart implements Task {
       );
       const displayedQuantity = await quantityElement.textContent();
       expect(displayedQuantity?.trim()).toBe(this.expectedQuantity.toString());
+    } else if (this.expectedQuantity) {
+      expect(orderForm.items.length).toBe(this.expectedQuantity);
     } else {
       expect(orderForm.items.length).toBe(0);
     }

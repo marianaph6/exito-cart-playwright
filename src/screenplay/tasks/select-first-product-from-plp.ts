@@ -5,10 +5,10 @@ import { env } from "../../helpers/env.helper";
 import { HandleCookieConsent } from "./handle-cookie-consent";
 
 export class SelectFirstProductFromPLP implements Task {
-  private constructor() {}
+  private constructor(private quantity: number) {}
 
-  static andAddToCart(): SelectFirstProductFromPLP {
-    return new SelectFirstProductFromPLP();
+  static andAddToCart(quantity: number = 1): SelectFirstProductFromPLP {
+    return new SelectFirstProductFromPLP(quantity);
   }
 
   async performAs(actor: Actor): Promise<void> {
@@ -17,12 +17,24 @@ export class SelectFirstProductFromPLP implements Task {
 
     await actor.attemptsTo(HandleCookieConsent.ifPresent());
 
-    await page
-      .locator('ul[data-fs-product-grid-list="true"] > li')
-      .first()
-      .locator('button:has-text("Agregar")')
-      .click();
+    const productGrid = page.locator('ul[data-fs-product-grid-list="true"]');
+    await productGrid.waitFor({
+      state: "visible",
+      timeout: env.defaultTimeout,
+    });
 
-    await page.waitForTimeout(env.defaultTimeout);
+    for (let i = 0; i < this.quantity; i++) {
+      const addButton = productGrid
+        .locator("li")
+        .nth(i)
+        .locator('button:has-text("Agregar")');
+
+      await addButton.waitFor({
+        state: "visible",
+        timeout: env.defaultTimeout,
+      });
+      await addButton.click({ force: true });
+      await page.waitForTimeout(env.defaultTimeout);
+    }
   }
 }

@@ -9,6 +9,7 @@ import { ValidateEmptyCart } from "../screenplay/tasks/validate-empty-cart";
 import { RemoveFromMinicart } from "../screenplay/tasks/remove-from-minicart";
 import { SelectFirstProductFromPLP } from "../screenplay/tasks/select-first-product-from-plp";
 import { env } from "../helpers/env.helper";
+import { SelectDeliveryMethod } from "../screenplay/tasks/select-delivery-method";
 
 test.describe("Cart Management", () => {
   test("CP1: Validar cantidad en carrito vs orderForm", async ({ page }) => {
@@ -58,5 +59,25 @@ test.describe("Cart Management", () => {
     // Then: el producto no debe estar en el summary
     // And: no debe aparecer en el arreglo de items del orderForm
     await actor.attemptsTo(ValidateEmptyCart.inCheckout());
+  });
+
+  test("CP4: Validar agregar múltiples productos al carrito", async ({
+    page,
+  }) => {
+    // Given: el usuario está en el PLP de aseo del hogar
+    const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
+    await actor.attemptsTo(NavigateTo.page(env.plpAseoSlug));
+
+    // And: selecciona el método de entrega
+    await actor.attemptsTo(SelectDeliveryMethod.pickup());
+
+    // When: agrega 3 productos diferentes al carrito
+    await actor.attemptsTo(SelectFirstProductFromPLP.andAddToCart(3));
+
+    // And: navega al checkout
+    await actor.attemptsTo(NavigateToCart.fromPLP());
+
+    // Then: debe ver los tres productos en el carrito
+    await actor.attemptsTo(ValidateCart.hasItems(3));
   });
 });
