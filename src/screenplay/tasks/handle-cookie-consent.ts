@@ -17,9 +17,25 @@ export class HandleCookieConsent implements Task {
     const cookieButton = page.locator(
       'button[data-fs-cookies-modal-button="true"]'
     );
-    if (await cookieButton.isVisible()) {
-      await cookieButton.click();
-      await page.waitForTimeout(env.defaultTimeout);
+
+    const isModalVisible = await page
+      .locator(".styles_fsCookiesModal__0jD9C")
+      .isVisible();
+
+    if (isModalVisible) {
+      await cookieButton.waitFor({
+        state: "visible",
+        timeout: env.defaultTimeout,
+      });
+      await cookieButton.scrollIntoViewIfNeeded();
+      await cookieButton.click({ force: true, timeout: env.defaultTimeout });
+
+      await page.waitForSelector(".styles_fsCookiesModal__0jD9C", {
+        state: "hidden",
+        timeout: env.defaultTimeout,
+      });
+
+      await page.waitForTimeout(1000);
     }
   }
 }
