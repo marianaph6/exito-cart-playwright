@@ -80,4 +80,24 @@ test.describe("Cart Management", () => {
     // Then: debe ver los tres productos en el carrito
     await actor.attemptsTo(ValidateCart.hasItems(3));
   });
+
+  test("CP5: Validar persistencia del carrito tras recargar página", async ({
+    page,
+  }) => {
+    // Given: el usuario está en el PLP
+    const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
+    await actor.attemptsTo(NavigateTo.page(env.plpSlug));
+
+    // When: agrega un producto al carrito
+    await actor.attemptsTo(SelectFirstProductFromPLP.andAddToCart());
+
+    // And: recarga la página
+    await page.reload();
+
+    // And: navega al checkout
+    await actor.attemptsTo(NavigateToCart.fromPLP());
+
+    // Then: el producto debe seguir en el carrito
+    await actor.attemptsTo(ValidateCart.hasItems(1));
+  });
 });

@@ -51,7 +51,8 @@ export class ValidateCart implements Task {
       const displayedQuantity = await quantityElement.textContent();
       expect(displayedQuantity?.trim()).toBe(this.expectedQuantity.toString());
     } else if (this.expectedQuantity) {
-      expect(orderForm.items.length).toBe(this.expectedQuantity);
+      const nonGiftItems = orderForm.items.filter((item) => !item.isGift);
+      expect(nonGiftItems.length).toBe(this.expectedQuantity);
     } else {
       expect(orderForm.items.length).toBe(0);
     }
