@@ -1,20 +1,25 @@
-import { expect, test } from '@playwright/test';
-import { PDPPage } from '../pages/pdp.page';
-import { CheckoutPage } from '../pages/checkout.page';
-import { env } from '../helpers/env.helper';
-import { expectCartSync, getOrderForm } from '../helpers/orderForm.helper';
+import { test } from "@playwright/test";
+import { Actor } from "../screenplay/actor";
+import { BrowseTheWeb } from "../screenplay/abilities/browse-the-web";
+import { AddProductToCart } from "../screenplay/tasks/add-product-to-cart";
+import { NavigateTo } from "../screenplay/tasks/navigate-to";
+import { ValidateCart } from "../screenplay/tasks/validate-cart";
+import { RemoveProductFromCart } from "../screenplay/tasks/remove-product-from-cart";
+import { env } from "../helpers/env.helper";
 
-test.describe('HU: agregar producto y validar orderForm', () => {
+test.describe("Cart Management", () => {
+  test("CP1: Validar cantidad en carrito vs orderForm", async ({ page }) => {
+    // Given: el usuario está en el PDP de Televisor SAMSUNG 60″ UHD4K Smart TV
+    const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
+    await actor.attemptsTo(NavigateTo.productDetailPage(env.pdpSlug));
 
-  test('CP1 – TV Samsung agregado desde PDP', async ({ page }) => {
-    const pdp = new PDPPage(page);
-    const checkout = new CheckoutPage(page);
+    // When: agrega 1 al carrito
+    // And: viaja al checkout
+    await actor.attemptsTo(AddProductToCart.withoutWarranty());
 
-    await pdp.open();
-    await pdp.addToCart();
-    await pdp.chooseNoWarrantyAndGoToCart();
-
-    await checkout.expectItem();
-    await expectCartSync(page, env.pdpName, Number(env.pdpQty));
+    // Then: la cantidad que se ve en el summary coincide con la del orderForm
+    await actor.attemptsTo(
+      ValidateCart.containsProduct(env.pdpName, Number(env.pdpQty))
+    );
   });
 });
