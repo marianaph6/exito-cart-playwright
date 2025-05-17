@@ -2,6 +2,7 @@ import { Task } from "./task";
 import { Actor } from "../actor";
 import { BrowseTheWeb } from "../abilities/browse-the-web";
 import { env } from "../../helpers/env.helper";
+import { HandleCookieConsent } from "./handle-cookie-consent";
 
 export class AddProductToCart implements Task {
   private constructor(private withWarranty: boolean = false) {}
@@ -17,6 +18,8 @@ export class AddProductToCart implements Task {
   async performAs(actor: Actor): Promise<void> {
     const browseTheWeb = actor.abilityTo(BrowseTheWeb);
     const page = browseTheWeb.getPage();
+
+    await actor.attemptsTo(HandleCookieConsent.ifPresent());
 
     await page.click(
       '//div[@data-fs-container-buybutton]//span[contains(text(),"Agregar")]//parent::button'

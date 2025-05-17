@@ -5,13 +5,15 @@ import { AddProductToCart } from "../screenplay/tasks/add-product-to-cart";
 import { NavigateTo } from "../screenplay/tasks/navigate-to";
 import { ValidateCart } from "../screenplay/tasks/validate-cart";
 import { RemoveProductFromCart } from "../screenplay/tasks/remove-product-from-cart";
+import { NavigateToCart } from "../screenplay/tasks/navigate-to-cart";
+import { ValidateEmptyCart } from "../screenplay/tasks/validate-empty-cart";
 import { env } from "../helpers/env.helper";
 
 test.describe("Cart Management", () => {
   test("CP1: Validar cantidad en carrito vs orderForm", async ({ page }) => {
     // Given: el usuario está en el PDP de Televisor SAMSUNG 60″ UHD4K Smart TV
     const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
-    await actor.attemptsTo(NavigateTo.productDetailPage(env.pdpSlug));
+    await actor.attemptsTo(NavigateTo.page(env.pdpSlug));
 
     // When: agrega 1 al carrito
     // And: viaja al checkout
@@ -21,5 +23,18 @@ test.describe("Cart Management", () => {
     await actor.attemptsTo(
       ValidateCart.containsProduct(env.pdpName, Number(env.pdpQty))
     );
+  });
+
+  test("CP2: Validar carrito vacío en orderForm", async ({ page }) => {
+    // Given: el usuario está en el PLP
+    // And: no tiene items en el carrito
+    const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
+    await actor.attemptsTo(NavigateTo.page(env.plpSlug));
+
+    // When: viaja al summary del checkout
+    await actor.attemptsTo(NavigateToCart.fromPLP());
+
+    // Then: no debe visualizarse nada en el arreglo de items del orderForm
+    await actor.attemptsTo(ValidateEmptyCart.inCheckout());
   });
 });
