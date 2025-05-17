@@ -5,10 +5,13 @@ import { env } from "../../helpers/env.helper";
 import { HandleCookieConsent } from "./handle-cookie-consent";
 
 export class AddProductToCart implements Task {
-  private constructor(private withWarranty: boolean = false) {}
+  private constructor(
+    private withWarranty: boolean = false,
+    private continueShopping: boolean = false
+  ) {}
 
-  static withoutWarranty(): AddProductToCart {
-    return new AddProductToCart(false);
+  static withoutWarranty(continueShopping: boolean = false): AddProductToCart {
+    return new AddProductToCart(false, continueShopping);
   }
 
   static withWarranty(): AddProductToCart {
@@ -28,7 +31,11 @@ export class AddProductToCart implements Task {
     if (!this.withWarranty) {
       await page.waitForTimeout(env.defaultTimeout);
       await page.click('//button/label[@for="modalUI_empty"]');
-      await page.click('//button/span[contains(text(),"Ir al carrito")]');
+      if (this.continueShopping) {
+        await page.getByRole("button", { name: "Seguir comprando" }).click();
+      } else {
+        await page.click('//button/span[contains(text(),"Ir al carrito")]');
+      }
       await page.waitForTimeout(env.defaultTimeout);
     }
   }

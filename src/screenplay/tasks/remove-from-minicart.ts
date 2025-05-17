@@ -2,12 +2,13 @@ import { Task } from "./task";
 import { Actor } from "../actor";
 import { BrowseTheWeb } from "../abilities/browse-the-web";
 import { HandleCookieConsent } from "./handle-cookie-consent";
+import { env } from "../../helpers/env.helper";
 
 export class RemoveFromMinicart implements Task {
-  private constructor() {}
+  private constructor(private readonly quantity: number = 1) {}
 
-  static product(): RemoveFromMinicart {
-    return new RemoveFromMinicart();
+  static product(quantity: number = 1): RemoveFromMinicart {
+    return new RemoveFromMinicart(quantity);
   }
 
   async performAs(actor: Actor): Promise<void> {
@@ -21,8 +22,12 @@ export class RemoveFromMinicart implements Task {
 
     await cartToggleButton.click({ force: true });
 
-    await page.click('button:has(svg path[d^="M5.111 19.775"])');
+    for (let i = 0; i < this.quantity; i++) {
+      await page.click('button:has(svg path[d^="M5.111 19.775"])');
+      await page.waitForTimeout(env.defaultTimeout);
+    }
 
     await page.click('button:has(svg use[href$="#CloseMyAccount"])');
+    await page.waitForTimeout(env.defaultTimeout);
   }
 }

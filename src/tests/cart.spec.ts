@@ -10,6 +10,7 @@ import { RemoveFromMinicart } from "../screenplay/tasks/remove-from-minicart";
 import { SelectFirstProductFromPLP } from "../screenplay/tasks/select-first-product-from-plp";
 import { env } from "../helpers/env.helper";
 import { SelectDeliveryMethod } from "../screenplay/tasks/select-delivery-method";
+import { UpdateProductQuantity } from "../screenplay/tasks/update-product-quantity";
 
 test.describe("Cart Management", () => {
   test("CP1: Validar cantidad en carrito vs orderForm", async ({ page }) => {
@@ -99,5 +100,25 @@ test.describe("Cart Management", () => {
 
     // Then: el producto debe seguir en el carrito
     await actor.attemptsTo(ValidateCart.hasItems(1));
+  });
+
+  test("CP6: Validar cambio de cantidad de producto en el PDP", async ({
+    page,
+  }) => {
+    // Given: el usuario está en el PDP
+    const actor = Actor.named("Customer").whoCan(BrowseTheWeb.using(page));
+    await actor.attemptsTo(NavigateTo.page(env.pdpSlug));
+
+    // When: agrega un producto al carrito y continúa comprando
+    await actor.attemptsTo(AddProductToCart.withoutWarranty(true));
+
+    // And: cambia la cantidad del producto a 3
+    await actor.attemptsTo(UpdateProductQuantity.to(3));
+
+    // And: navega al checkout
+    await actor.attemptsTo(NavigateToCart.fromPLP());
+
+    // Then: debe ver el producto con cantidad 3 en el carrito
+    await actor.attemptsTo(ValidateCart.containsProduct(env.pdpName, 3));
   });
 });
