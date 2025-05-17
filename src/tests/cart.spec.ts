@@ -39,7 +39,7 @@ test.describe("Cart Management", () => {
     await actor.attemptsTo(ValidateEmptyCart.inCheckout());
   });
 
-  /* test("CP3: Validar eliminación de producto desde minicart", async ({
+  test("CP3: Validar eliminación de producto desde minicart", async ({
     page,
   }) => {
     // Given: el usuario está en el PLP
@@ -58,5 +58,5 @@ test.describe("Cart Management", () => {
     // Then: el producto no debe estar en el summary
     // And: no debe aparecer en el arreglo de items del orderForm
     await actor.attemptsTo(ValidateEmptyCart.inCheckout());
-  }); */
+  });
 });
