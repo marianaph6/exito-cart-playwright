@@ -53,6 +53,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
           npx playwright test --project=${{ matrix.browser }} \
             --reporter=html \
             --retries=2 \
@@ -63,7 +64,6 @@ jobs:
           TEST_NUMBER: ${{ matrix.test }}
           CI: true
           DEBUG: pw:api
-          PLAYWRIGHT_HEADLESS: true
 
       - name: Upload test results
         if: always()
