@@ -49,9 +49,19 @@ jobs:
         run: npm ci
 
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ matrix.browser }} --reporter=html
+        run: |
+          npx playwright test --project=${{ matrix.browser }} \
+            --reporter=html \
+            --retries=2 \
+            --timeout=60000 \
+            --workers=1 \
+            --headed \
+            --debug
         env:
           TEST_NUMBER: ${{ matrix.test }}
+          PLAYWRIGHT_BROWSERS_PATH: 0
+          CI: true
+          DEBUG: pw:api
 
       - name: Upload test results
         if: always()
