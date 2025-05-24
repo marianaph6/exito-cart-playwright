@@ -17,7 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.42.1-jammy
+      image: mcr.microsoft.com/playwright:v1.52.0-jammy
     strategy:
       matrix:
         test: [1, 2, 3, 4, 5, 6]
