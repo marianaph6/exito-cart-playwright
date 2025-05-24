@@ -16,11 +16,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.42.1-jammy
     strategy:
       matrix:
         test: [1, 2, 3, 4, 5, 6]
         browser: [chromium, firefox, webkit]
-        # This ensures we have 6 parallel jobs with different browser combinations
         include:
           - test: 1
             browser: chromium
@@ -46,9 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.browser }} --reporter=html
