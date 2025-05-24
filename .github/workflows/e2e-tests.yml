@@ -37,15 +37,9 @@ jobs:
           npx playwright test src/tests/cart.spec.ts -g "${{ matrix.testcase }}" \
             --reporter=html \
             --retries=2 \
-            --timeout=120000 \
-            --max-failures=1 \
-            --workers=1 \
-            --trace=on-first-retry
+            --timeout=90000
         env:
           CI: true
-          PLAYWRIGHT_BROWSERS_PATH: 0
-          PLAYWRIGHT_SKIP_BROWSER_GC: 1
-          PLAYWRIGHT_DISABLE_HTTP_CACHE: 1
 
       - name: Upload test results
         if: always()
