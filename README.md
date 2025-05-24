@@ -92,3 +92,37 @@ cp .env.example .env     # Ajusta valores si es necesario
 npm ci
 npm run pw:init          # Descarga navegadores
 ```
+
+## CI/CD Pipeline
+
+El proyecto incluye un pipeline de CI/CD implementado con GitHub Actions que ejecuta los casos de prueba de manera automatizada. Las características principales son:
+
+### Configuración del Pipeline
+
+- **Disparador**: Manual (workflow_dispatch)
+- **Concurrencia**: 6 casos de prueba ejecutándose en paralelo
+- **Navegadores**: Distribución entre Chromium, Firefox y WebKit
+- **Matriz de Ejecución**: Cada caso de prueba se ejecuta en un navegador específico
+
+### Características
+
+- Ejecución paralela de los 6 casos de prueba
+- Contenedores independientes para cada caso
+- Generación y almacenamiento de reportes HTML como artefactos
+- Retención de reportes por 30 días
+
+### Ejecución del Pipeline
+
+1. Navega a la pestaña "Actions" en el repositorio
+2. Selecciona el workflow "Playwright Tests"
+3. Haz clic en "Run workflow"
+4. Selecciona el navegador deseado (opcional)
+5. Haz clic en "Run workflow"
+
+### Artefactos
+
+Los reportes de las pruebas se generan como artefactos y pueden ser descargados desde la interfaz de GitHub Actions después de cada ejecución. Los reportes incluyen:
+
+- Capturas de pantalla de fallos
+- Trazas de errores
+- Información detallada de cada paso de la prueba

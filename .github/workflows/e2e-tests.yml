@@ -1,0 +1,64 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Browser to run tests on"
+        required: true
+        default: "chromium"
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test: [1, 2, 3, 4, 5, 6]
+        browser: [chromium, firefox, webkit]
+        # This ensures we have 6 parallel jobs with different browser combinations
+        include:
+          - test: 1
+            browser: chromium
+          - test: 2
+            browser: firefox
+          - test: 3
+            browser: webkit
+          - test: 4
+            browser: chromium
+          - test: 5
+            browser: firefox
+          - test: 6
+            browser: webkit
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=${{ matrix.browser }} --reporter=html
+        env:
+          TEST_NUMBER: ${{ matrix.test }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.test }}
+          path: playwright-report/
+          retention-days: 30
