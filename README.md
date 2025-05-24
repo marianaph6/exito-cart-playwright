@@ -101,28 +101,41 @@ El proyecto incluye un pipeline de CI/CD implementado con GitHub Actions que eje
 
 - **Disparador**: Manual (workflow_dispatch)
 - **Concurrencia**: 6 casos de prueba ejecutándose en paralelo
-- **Navegadores**: Distribución entre Chromium, Firefox y WebKit
-- **Matriz de Ejecución**: Cada caso de prueba se ejecuta en un navegador específico
+- **Contenedores**: Cada caso de prueba se ejecuta en un contenedor independiente
+- **Navegadores**: Configurados automáticamente en cada contenedor
 
-### Características
+### Características Técnicas
 
-- Ejecución paralela de los 6 casos de prueba
-- Contenedores independientes para cada caso
-- Generación y almacenamiento de reportes HTML como artefactos
-- Retención de reportes por 30 días
+- **Ejecución Paralela**: Los 6 casos de prueba se ejecutan simultáneamente
+- **Aislamiento**: Cada caso de prueba tiene su propio contenedor y navegador
+- **Estabilidad**:
+  - Reintentos automáticos (2 intentos)
+  - Timeout configurado (60 segundos)
+  - Servidor X virtual para navegadores
+- **Reportes**:
+  - Generación de reportes HTML
+  - Capturas de pantalla de fallos
+  - Trazas detalladas
+  - Retención de 30 días
 
 ### Ejecución del Pipeline
 
 1. Navega a la pestaña "Actions" en el repositorio
 2. Selecciona el workflow "Playwright Tests"
 3. Haz clic en "Run workflow"
-4. Selecciona el navegador deseado (opcional)
-5. Haz clic en "Run workflow"
+4. Espera a que se completen las 6 ejecuciones paralelas
 
-### Artefactos
+### Artefactos y Reportes
 
 Los reportes de las pruebas se generan como artefactos y pueden ser descargados desde la interfaz de GitHub Actions después de cada ejecución. Los reportes incluyen:
 
 - Capturas de pantalla de fallos
 - Trazas de errores
 - Información detallada de cada paso de la prueba
+- Estado de cada caso de prueba
+
+### Manejo de Fallos
+
+- Los fallos no detienen la ejecución de otros casos de prueba
+- Se realizan 2 reintentos automáticos en caso de fallo
+- Los reportes detallados ayudan a identificar la causa raíz de los fallos
