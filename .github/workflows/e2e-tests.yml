@@ -1,7 +1,7 @@
 name: Playwright Tests
 
 on:
-  workflow_dispatch: # Solo permite ejecución manual desde la interfaz de GitHub
+  workflow_dispatch:
 
 jobs:
   test:
@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-jammy
+      options: --user 1001
 
     strategy:
-      fail-fast: false # No detener todos los trabajos si uno falla
+      fail-fast: false
       matrix:
         testcase: ["CP1", "CP2", "CP3", "CP4", "CP5", "CP6"]
 
