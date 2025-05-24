@@ -58,12 +58,12 @@ jobs:
             --retries=2 \
             --timeout=60000 \
             --workers=1 \
-            --headed \
             --debug
         env:
           TEST_NUMBER: ${{ matrix.test }}
           CI: true
           DEBUG: pw:api
+          PLAYWRIGHT_HEADLESS: true
 
       - name: Upload test results
         if: always()
